@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\Roles;
 
+use App\Enums\RoleStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class IndexRolesRequest extends FormRequest
 {
@@ -23,7 +25,10 @@ class IndexRolesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'page' => ['sometimes', 'integer', 'min:1'],
+            'per_page' => ['sometimes', 'integer', 'min:1', 'max:' . config('api.pagination.max_per_page')],
+            'search' => ['sometimes', 'string', 'max:255'],
+            'status' => ['sometimes', 'string', Rule::enum(RoleStatus::class)],
         ];
     }
 }

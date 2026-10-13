@@ -32,7 +32,7 @@ trait ApiResponse
 
     protected function paginatedResponse(
         AnonymousResourceCollection $collection,
-        string $message = 'Data retrieved successfully'
+        string $message = 'Data retrieved successfully.'
     ): JsonResponse {
         $response = $collection->response()->getData(true);
 

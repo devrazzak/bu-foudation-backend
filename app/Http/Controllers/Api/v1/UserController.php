@@ -27,8 +27,8 @@ class UserController extends Controller
     public function index(IndexUserRequest $request): JsonResponse
     {
 
-        $queries = $request->validated();
-        $users = $this->userService->listUsers($queries);
+        $queryParams = $request->validated();
+        $users = $this->userService->listUsers($queryParams);
 
         return $this->paginatedResponse(
             UserResource::collection($users),
@@ -87,8 +87,9 @@ class UserController extends Controller
     {
         $this->userService->delete($user);
 
-        return response()->json([
-            'message' => 'User deleted successfully.',
-        ]);
+        return $this->successResponse(
+            null,
+            'User deleted successfully.'
+        );
     }
 }

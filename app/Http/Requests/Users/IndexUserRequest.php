@@ -17,12 +17,7 @@ class IndexUserRequest extends FormRequest
     {
         return [
             'page' => ['sometimes', 'integer', 'min:1'],
-            'per_page' => [
-                'sometimes',
-                'integer',
-                'min:1',
-                'max:' . config('api.pagination.max_per_page'),
-            ],
+            'per_page' => ['sometimes', 'integer', 'min:1', 'max:' . config('api.pagination.max_per_page')],
             'status' => ['sometimes', Rule::enum(UserStatus::class)],
             'search' => ['sometimes', 'string', 'max:255'],
             'sort_by' => ['sometimes', 'in:name,email,created_at'],

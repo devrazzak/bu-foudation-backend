@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\Roles;
 
+use App\Enums\RoleStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateRoleRequest extends FormRequest
 {
@@ -23,7 +25,9 @@ class UpdateRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['sometimes', 'required', 'string', 'max:255', Rule::Unique('roles', 'name')->ignore($this->route('role'))],
+            'description' => ['nullable', 'string', 'max:255'],
+            'status' => ['sometimes', 'required', Rule::enum(RoleStatus::class)],
         ];
     }
 }
