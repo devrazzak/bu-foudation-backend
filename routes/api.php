@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\v1\ActivityCategoryController;
 use App\Http\Controllers\Api\v1\UserController;
 use App\Http\Controllers\Api\v1\RoleController;
 use App\Http\Controllers\Api\v1\ActivityController;
@@ -8,5 +9,6 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
     Route::apiResource('users', UserController::class);
     Route::apiResource('roles', RoleController::class);
+    Route::apiResource('activity-categories', ActivityCategoryController::class);
     Route::apiResource('activities', ActivityController::class);
 });

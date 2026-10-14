@@ -2,17 +2,19 @@
 
 namespace App\Http\Requests\ActivityCategory;
 
+use App\Enums\ActivityCategoryStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreActivityCategoryRequest extends FormRequest
+class IndexActivityCategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +25,10 @@ class StoreActivityCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'page' => ['sometimes', 'integer', 'min:1'],
+            'per_page' => ['sometimes', 'integer', 'min:1', 'max:' . config('api.pagination.max_per_page')],
+            'search' => ['sometimes', 'string', 'max:255'],
+            'status' => ['sometimes', Rule::enum(ActivityCategoryStatus::class)],
         ];
     }
 }
