@@ -16,7 +16,7 @@ class ActivityCategoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'title' => $this->title,
+            'name' => $this->name,
             'slug' => $this->slug,
             'description' => $this->description,
             'status' => [

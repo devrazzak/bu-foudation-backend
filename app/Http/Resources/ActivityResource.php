@@ -25,7 +25,7 @@ class ActivityResource extends JsonResource
                 'label' => $this->status->label(),
                 'value' => $this->status->value,
             ],
-            'cover_image_url' => $this->cover_image_url,
+            'image' => $this->image,
             'location' => $this->location,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,

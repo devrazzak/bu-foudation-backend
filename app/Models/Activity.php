@@ -15,7 +15,7 @@ class Activity extends Model
         'short_description',
         'content',
         'status',
-        'cover_image',
+        'image',
         'location',
         'start_date',
         'end_date'
@@ -30,5 +30,10 @@ class Activity extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(ActivityCategory::class, 'category_id');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

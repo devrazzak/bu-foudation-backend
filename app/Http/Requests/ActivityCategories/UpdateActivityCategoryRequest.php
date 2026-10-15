@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\ActivityCategory;
+namespace App\Http\Requests\ActivityCategories;
 
 use App\Enums\ActivityCategoryStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -25,8 +25,8 @@ class UpdateActivityCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['sometimes', 'string', 'max:255'],
-            'slug' => ['sometimes', 'string', 'max:255', Rule::unique('activity_categories', 'slug')->ignore($this->route('activity_category'))],
+            'name' => ['sometimes', 'string', 'max:255'],
+            'slug' => ['sometimes', 'string', 'max:255', Rule::unique('activity_categories', 'slug')->ignore($this->route('activityCategory'))],
             'description' => ['nullable', 'string', 'max:255'],
             'status' => ['sometimes', Rule::enum(ActivityCategoryStatus::class)],
         ];

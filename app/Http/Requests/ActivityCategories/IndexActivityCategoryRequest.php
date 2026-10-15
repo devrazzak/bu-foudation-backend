@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\ActivityCategory;
+namespace App\Http\Requests\ActivityCategories;
 
 use App\Enums\ActivityCategoryStatus;
 use Illuminate\Contracts\Validation\ValidationRule;

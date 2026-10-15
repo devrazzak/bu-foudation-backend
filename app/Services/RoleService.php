@@ -7,7 +7,10 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class RoleService
 {
-    public function roleList($queryParams = []): LengthAwarePaginator
+    /**
+     * List all roles.
+     */
+    public function listRoles($queryParams = []): LengthAwarePaginator
     {
         $per_page = min($queryParams['per_page'] ?? config('api.pagination.default_per_page'), config('api.pagination.max_per_page'));
 
@@ -27,11 +30,17 @@ class RoleService
             ->paginate($per_page);
     }
 
+    /**
+     * Create a new role.
+     */
     public function create(array $data): Role
     {
         return Role::create($data);
     }
 
+    /**
+     * Update an existing role.
+     */
     public function update(Role $role, array $data): Role
     {
         $role->update($data);
@@ -39,6 +48,9 @@ class RoleService
         return $role->refresh();
     }
 
+    /**
+     * Delete a role.
+     */
     public function delete(Role $role): void
     {
         $role->delete();

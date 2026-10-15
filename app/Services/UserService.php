@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
+    /**
+     * List all users.
+     */
     public function listUsers(array $queryParams = []): LengthAwarePaginator
     {
         $per_page = min($queryParams['per_page'] ?? config('api.pagination.default_per_page'), config('api.pagination.max_per_page'));
@@ -36,6 +39,9 @@ class UserService
             ->paginate($per_page);
     }
 
+    /**
+     * Create a new user.
+     */
     public function create(array $data): User
     {
         $data['password'] = Hash::make($data['password']);
@@ -43,6 +49,9 @@ class UserService
         return User::create($data);
     }
 
+    /**
+     * Update an existing user.
+     */
     public function update(User $user, array $data): User
     {
         if (isset($data['password'])) {
@@ -54,6 +63,9 @@ class UserService
         return $user->refresh();
     }
 
+    /**
+     * Delete a user.
+     */
     public function delete(User $user): void
     {
         $user->delete();

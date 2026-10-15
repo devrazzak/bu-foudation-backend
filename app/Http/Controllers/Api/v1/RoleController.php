@@ -27,7 +27,7 @@ class RoleController extends Controller
     {
         $queryParams = $request->validated();
 
-        $roles = $this->roleService->roleList($queryParams);
+        $roles = $this->roleService->listRoles($queryParams);
 
         return $this->paginatedResponse(
             RoleResource::collection($roles),

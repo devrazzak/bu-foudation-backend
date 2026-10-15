@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Activity;
+namespace App\Http\Requests\Activities;
 
 use App\Enums\ActivityStatus;
 use Illuminate\Contracts\Validation\ValidationRule;

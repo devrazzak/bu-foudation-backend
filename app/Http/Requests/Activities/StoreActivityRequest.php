@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Activity;
+namespace App\Http\Requests\Activities;
 
 use App\Enums\ActivityStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -25,13 +25,13 @@ class StoreActivityRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'category_id' => ['required', 'integer', Rule::exists('activity_categories', 'id')],
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', Rule::unique('activities', 'slug')],
             'short_description' => ['nullable', 'string', 'max:500'],
             'content' => ['nullable', 'string'],
-            'category_id' => ['required', 'integer', Rule::exists('activity_categories', 'id')],
             'status' => ['required', Rule::enum(ActivityStatus::class)],
-            'cover_image' => ['nullable', 'image', 'max:2048'],
+            'image' => ['nullable', 'string'],
             'location' => ['nullable', 'string', 'max:255'],
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date', 'after:start_date'],
