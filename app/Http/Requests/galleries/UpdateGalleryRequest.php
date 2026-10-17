@@ -12,7 +12,7 @@ class UpdateGalleryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,9 @@ class UpdateGalleryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => ['sometimes', 'string', 'max:255'],
+            'image' => ['sometimes', 'string'],
+            'short_description' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

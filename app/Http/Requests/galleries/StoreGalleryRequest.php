@@ -12,7 +12,7 @@ class StoreGalleryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,9 @@ class StoreGalleryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => ['required', 'string', 'max:255'],
+            'image' => ['required', 'string'],
+            'short_description' => ['nullable', 'string', 'max:255'],
         ];
     }
 }
