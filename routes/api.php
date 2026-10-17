@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\v1\RoleController;
 use App\Http\Controllers\Api\v1\ActivityController;
 use App\Http\Controllers\Api\v1\BlogCategoriesController;
 use App\Http\Controllers\Api\v1\BlogController;
+use App\Http\Controllers\Api\v1\GalleryController;
+use App\Http\Controllers\Api\v1\MediaController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -17,4 +19,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('blog-categories', BlogCategoriesController::class)
         ->parameter('blog-categories', 'blogCategory');
     Route::apiResource('blogs', BlogController::class);
+    Route::apiResource('galleries', GalleryController::class);
+    Route::apiResource('media', MediaController::class)
+        ->parameter('media', 'media');
 });
