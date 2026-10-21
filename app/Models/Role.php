@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\RoleStatus;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Role extends Model
 {
@@ -26,4 +27,12 @@ class Role extends Model
     protected $casts = [
         'status' => RoleStatus::class,
     ];
+
+    /**
+     * Get the users that belong to the role.
+     */
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class, 'role_id');
+    }
 }

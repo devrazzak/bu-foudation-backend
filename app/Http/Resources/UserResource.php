@@ -24,6 +24,10 @@ class UserResource extends JsonResource
                 'label' => $this->status->label(),
                 'value' => $this->status->value,
             ],
+            'role' => $this->whenLoaded(
+                'role',
+                fn() => new RoleResource($this->role),
+            ),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

@@ -16,6 +16,7 @@ class UserService
         $per_page = min($queryParams['per_page'] ?? config('api.pagination.default_per_page'), config('api.pagination.max_per_page'));
 
         return User::query()
+            ->with('role')
             ->latest()
             ->when(
                 $queryParams['status'] ?? null,
@@ -44,9 +45,17 @@ class UserService
      */
     public function create(array $data): User
     {
-        $data['password'] = Hash::make($data['password']);
+        return User::create($data)->load('role');
+    }
 
-        return User::create($data);
+    /**
+     * Create a new user by an administrator.
+     */
+    public function createByAdmin(array $data): User
+    {
+        $data['password'] = bin2hex(random_bytes(32));
+
+        return User::create($data)->load('role');
     }
 
     /**
@@ -54,13 +63,9 @@ class UserService
      */
     public function update(User $user, array $data): User
     {
-        if (isset($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
-        }
-
         $user->update($data);
 
-        return $user->refresh();
+        return $user->load('role')->refresh();
     }
 
     /**

@@ -31,7 +31,6 @@ class RegistrationRequest extends FormRequest
             'password' => ['required', 'string', 'confirmed', Password::min(8)->mixedCase()->numbers()],
             'phone_number' => ['nullable', 'string', 'max:255'],
             'profile_picture' => ['nullable', 'string', 'max:255'],
-            'status' => ['required', Rule::enum(UserStatus::class)],
             'terms_accepted' => ['nullable', 'boolean'],
         ];
     }

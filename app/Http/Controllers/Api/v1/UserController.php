@@ -41,7 +41,7 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request): JsonResponse
     {
-        $user = $this->userService->create(
+        $user = $this->userService->createByAdmin(
             $request->validated()
         );
 
@@ -59,7 +59,7 @@ class UserController extends Controller
     public function show(User $user): JsonResponse
     {
         return $this->successResponse(
-            new UserResource($user),
+            new UserResource($user->load('role')),
             'User retrieved successfully.'
         );
     }

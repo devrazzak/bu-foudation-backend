@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\EnsureUserHasRole;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -16,7 +18,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'role' => EnsureUserHasRole::class,
+        ]);
+
+        $middleware->redirectGuestsTo(
+            fn(Request $request) => $request->is('api/*')
+                ? null
+                : route('login')
+        );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
@@ -54,6 +64,20 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (
+            AuthenticationException $e,
+            Request $request
+        ) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthenticated',
+                ], 401);
+            }
+
+            return null;
+        });
+
+        $exceptions->render(function (
             HttpExceptionInterface $e,
             Request $request
         ) {
@@ -78,6 +102,8 @@ return Application::configure(basePath: dirname(__DIR__))
             if (!$request->is('api/*')) {
                 return null;
             }
+
+            report($e);
 
             return response()->json([
                 'success' => false,

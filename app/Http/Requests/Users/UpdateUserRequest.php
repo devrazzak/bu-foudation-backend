@@ -27,6 +27,7 @@ class UpdateUserRequest extends FormRequest
         return [
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'email' => ['sometimes', 'required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->route('user'))],
+            'role_id' => ['sometimes', 'required', 'integer', Rule::exists('roles', 'id')],
             'phone_number' => ['nullable', 'string', 'max:255'],
             'profile_picture' => ['nullable', 'string', 'max:255'],
             'status' => ['sometimes', 'required', Rule::enum(UserStatus::class)],

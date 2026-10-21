@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Enums\UserStatus;
+use App\Models\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -20,6 +22,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'role_id',
         'email',
         'phone_number',
         'profile_picture',
@@ -55,6 +58,11 @@ class User extends Authenticatable
 
     public function createdBy(): HasMany
     {
-        return $this->HasMany(Activity::class, 'created_by');
+        return $this->hasMany(Activity::class, 'created_by');
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'role_id');
     }
 }
