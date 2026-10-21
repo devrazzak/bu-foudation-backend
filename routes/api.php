@@ -12,8 +12,24 @@ use App\Http\Controllers\Api\v1\MediaController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
+
+    // Public routes
     Route::post('/registration', [AuthController::class, 'registration'])->middleware('throttle:5,1');
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('throttle:5,1');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:5,1');
+
+    // Refresh token route with specific middleware
+    Route::post('/refresh', [AuthController::class, 'refresh'])
+        ->middleware(['auth:sanctum', 'abilities:issue-access-token'])->middleware('throttle:5,1');
+
+    // Protected routes
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::get('/me', [AuthController::class, 'me']);
+        Route::patch('/me', [AuthController::class, 'updateProfile']);
+        Route::put('/change-password', [AuthController::class, 'changePassword'])->middleware('throttle:5,1');
+        Route::post('/logout', [AuthController::class, 'logout']);
+    });
 
     // Only admin can access these routes
     Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {

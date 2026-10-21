@@ -3,14 +3,20 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ChangePasswordRequest;
+use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegistrationRequest;
+use App\Http\Requests\Auth\ResetPasswordRequest;
+use App\Http\Requests\Auth\UpdateProfileRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Services\AuthService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Password;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -50,6 +56,126 @@ class AuthController extends Controller
                 'refresh_token_expires_at' => $result['refresh_token_expires_at'],
             ],
             'Login successful',
+        );
+    }
+
+    public function me(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        return $this->successResponse(
+            new UserResource($user),
+            'User details retrieved successfully',
+        );
+    }
+
+    public function changePassword(ChangePasswordRequest $request): JsonResponse
+    {
+
+        $this->authService->changePassword(
+            $request->user(),
+            $request->validated('password'),
+        );
+
+        return $this->successResponse(
+            null,
+            'Password changed successfully',
+        );
+    }
+
+    public function logout(Request $request): JsonResponse
+    {
+        $accessToken = $request->user()->currentAccessToken();
+
+        if (! $accessToken instanceof PersonalAccessToken) {
+            return $this->errorResponse(
+                'Invalid access token.',
+                401,
+            );
+        }
+
+        $this->authService->logout($accessToken);
+
+        return $this->successResponse(
+            null,
+            'Logged out successfully.',
+        );
+    }
+
+    public function refresh(Request $request): JsonResponse
+    {
+        $refreshToken = $request->user()->currentAccessToken();
+
+        if (! $refreshToken instanceof PersonalAccessToken) {
+            return $this->errorResponse(
+                'Invalid refresh token.',
+                401,
+            );
+        }
+
+        $tokens = $this->authService->refresh(
+            $request->user(),
+            $refreshToken,
+        );
+
+        return $this->successResponse(
+            $tokens,
+            'Token refreshed successfully.',
+        );
+    }
+
+    public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
+    {
+        $status = $this->authService->sendPasswordResetLink(
+            $request->validated('email'),
+        );
+
+        if ($status === Password::RESET_LINK_SENT) {
+            return $this->successResponse(
+                null,
+                'If the email is registered, a password reset link will be sent.',
+            );
+        }
+
+        return $this->successResponse(
+            null,
+            'If the email is registered, a password reset link will be sent.',
+        );
+    }
+
+
+    public function resetPassword(ResetPasswordRequest $request)
+    {
+        $status = $this->authService->resetPassword(
+            $request->validated()
+        );
+
+        if ($status === Password::PASSWORD_RESET) {
+            return $this->successResponse(
+                null,
+                'Password has been reset successfully. Please log in again.',
+            );
+        }
+
+        $message = match ($status) {
+            Password::INVALID_TOKEN => 'Password reset token is invalid or has expired.',
+            Password::INVALID_USER => 'No user found with the provided email address.',
+            default => 'Failed to reset password. Please try again.',
+        };
+
+        return $this->errorResponse($message, 400);
+    }
+
+    public function updateProfile(UpdateProfileRequest $request)
+    {
+        $user = $this->authService->updateProfile(
+            $request->user(),
+            $request->validated(),
+        );
+
+        return $this->successResponse(
+            new UserResource($user),
+            'Profile updated successfully.',
         );
     }
 }
