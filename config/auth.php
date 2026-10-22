@@ -103,6 +103,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Email Verification
+    |--------------------------------------------------------------------------
+    |
+    | Here you may define the settings for email verification, including the
+    | expiration time for the verification link and the throttle limit for
+    | resending verification emails. These settings help ensure the security
+    | and usability of the email verification process in your application.
+    |
+    */
+
+    'verification' => [
+        'expire' => 5,
+        'throttle' => 6,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Password Confirmation Timeout
     |--------------------------------------------------------------------------
     |

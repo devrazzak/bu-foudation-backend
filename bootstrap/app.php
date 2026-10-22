@@ -88,10 +88,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 return null;
             }
 
-            // Only expose the known login failure message.
-            $message = $e->getMessage() === 'Invalid email or password.'
-                ? 'Invalid email or password.'
-                : 'Unauthenticated.';
+            $message = $e->getMessage() ?: 'Unauthenticated.';
 
             return response()->json([
                 'success' => false,

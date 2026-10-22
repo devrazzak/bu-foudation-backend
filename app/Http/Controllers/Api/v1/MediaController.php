@@ -10,7 +10,6 @@ use App\Http\Resources\MediaResource;
 use App\Models\Media;
 use App\Services\MediaService;
 use App\Traits\ApiResponse;
-use Illuminate\Http\Request;
 
 class MediaController extends Controller
 {
@@ -19,6 +18,7 @@ class MediaController extends Controller
     public function __construct(
         private readonly MediaService $mediaService
     ) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -40,7 +40,8 @@ class MediaController extends Controller
     public function store(StoreMediaRequest $request)
     {
         $media = $this->mediaService->create(
-            $request->validated()
+            $request->validated(),
+            (int) $request->user()->id,
         );
 
         return $this->successResponse(

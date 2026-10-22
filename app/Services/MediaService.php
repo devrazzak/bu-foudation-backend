@@ -20,7 +20,7 @@ class MediaService
             ->latest()
             ->when(
                 $queryParams['search'] ?? null,
-                fn($query, $search) => $query->where(function ($query) use ($search) {
+                fn ($query, $search) => $query->where(function ($query) use ($search) {
                     $query->where('alt_text', 'like', "%{$search}%")
                         ->orWhere('original_name', 'like', "%{$search}%");
                 })
@@ -31,7 +31,7 @@ class MediaService
     /**
      * Create a new media.
      */
-    public function create(array $data): Media
+    public function create(array $data, ?int $uploadedBy = null): Media
     {
         $file = $data['file'];
 
@@ -47,6 +47,7 @@ class MediaService
                 'mime_type' => $file->getMimeType(),
                 'size' => $file->getSize(),
                 'alt_text' => $data['alt_text'] ?? null,
+                'uploaded_by' => $uploadedBy,
             ]);
         } catch (Throwable $exception) {
             Storage::disk($disk)->delete($path);

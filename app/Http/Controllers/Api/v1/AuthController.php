@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegistrationRequest;
+use App\Http\Requests\Auth\ResendVerificationEmailRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\UpdateProfileRequest;
 use App\Http\Resources\UserResource;
@@ -176,6 +177,32 @@ class AuthController extends Controller
         return $this->successResponse(
             new UserResource($user),
             'Profile updated successfully.',
+        );
+    }
+
+    public function verifyEmail(string $id, string $hash)
+    {
+        $verified = $this->authService->verifyEmail(
+            (int) $id,
+            $hash,
+        );
+
+        $status = $verified ? 'success' : 'already-verified';
+
+        return redirect()->away(
+            config('app.frontend_url') . '/email-verified?status=' . $status,
+        );
+    }
+
+    public function resendVerificationEmail(ResendVerificationEmailRequest $request): JsonResponse
+    {
+        $this->authService->resendVerificationEmail(
+            $request->validated('email'),
+        );
+
+        return $this->successResponse(
+            null,
+            'If the account exists and is not verified, a verification email will be sent.',
         );
     }
 }

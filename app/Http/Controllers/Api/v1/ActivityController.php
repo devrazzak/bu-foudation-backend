@@ -41,8 +41,8 @@ class ActivityController extends Controller
     public function store(StoreActivityRequest $request): JsonResponse
     {
         $activity = $this->activityService->create(
-            $request->validated()
-            // (int) $request->user()->id
+            $request->validated(),
+            (int) $request->user()->id,
         );
 
         return $this->successResponse(

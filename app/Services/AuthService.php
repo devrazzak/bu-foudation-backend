@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
@@ -45,6 +46,8 @@ class AuthService
             'status' => UserStatus::Active->value,
         ]);
 
+        event(new Registered($user));
+
         return $user->loadMissing('role');
     }
 
@@ -58,6 +61,11 @@ class AuthService
 
         if ($user->status !== UserStatus::Active) {
             throw new AuthenticationException('Your account is inactive.');
+        }
+        if (! $user->hasVerifiedEmail()) {
+            throw new AuthenticationException(
+                'Please verify your email address before logging in.',
+            );
         }
 
         $user->loadMissing('role');
@@ -183,5 +191,35 @@ class AuthService
         $user->save();
 
         return $user->refresh();
+    }
+
+    public function verifyEmail(int $userId, string $hash): bool
+    {
+        $user = User::query()->findOrFail($userId);
+
+        $expectedHash = sha1($user->getEmailForVerification());
+
+        if (!hash_equals($expectedHash, $hash)) {
+            abort(403, 'Invalid email verification link.');
+        }
+
+        if ($user->hasVerifiedEmail()) {
+            return false;
+        }
+
+        return $user->markEmailAsVerified();
+    }
+
+    public function resendVerificationEmail(string $email): void
+    {
+        $user = User::query()
+            ->where('email', $email)
+            ->first();
+
+        if (!$user || $user->hasVerifiedEmail()) {
+            return;
+        }
+
+        $user->sendEmailVerificationNotification();
     }
 }

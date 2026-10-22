@@ -19,11 +19,11 @@ class ActivityService
             ->latest()
             ->when(
                 $queryParams['status'] ?? null,
-                fn($query, $status) => $query->where('status', $status)
+                fn ($query, $status) => $query->where('status', $status)
             )
             ->when(
                 $queryParams['search'] ?? null,
-                fn($query, $search) => $query->where(function ($query) use ($search) {
+                fn ($query, $search) => $query->where(function ($query) use ($search) {
                     $query->where('title', 'like', "%{$search}%")
                         ->orWhere('short_description', 'like', "%{$search}%");
                 })
@@ -34,9 +34,10 @@ class ActivityService
     /**
      * Create a new activity.
      */
-    public function create(array $data): Activity
+    public function create(array $data, int $createdBy): Activity
     {
-        // $data['created_by'] = $userId;
+        $data['created_by'] = $createdBy;
+
         return Activity::create($data)->load('category', 'user');
     }
 

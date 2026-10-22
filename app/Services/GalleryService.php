@@ -15,9 +15,9 @@ class GalleryService
             ->latest()
             ->when(
                 $queryParams['search'] ?? null,
-                fn($query, $search) => $query->where(function ($query) use ($search) {
-                    $query->where('alt_text', 'like', "%{$search}%")
-                        ->orWhere('original_name', 'like', "%{$search}%");
+                fn ($query, $search) => $query->where(function ($query) use ($search) {
+                    $query->where('title', 'like', "%{$search}%")
+                        ->orWhere('short_description', 'like', "%{$search}%");
                 })
             )
             ->paginate($per_page);
